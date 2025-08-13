@@ -1,9 +1,10 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "./auth/[...nextauth]/route";
+
+import { getSession } from "@/features/auth/model/session";
 import { NextResponse } from "next/server";
 
+// check authentication
 export async function GET(request: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
   console.log("GET API", session);
   return NextResponse.json({ authenticated: !!session });
 }

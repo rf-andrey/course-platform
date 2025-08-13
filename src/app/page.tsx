@@ -1,21 +1,12 @@
-import prisma from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
-import { User } from "./user";
-import { LoginButton, LogoutButton } from "./auth";
+import { getSession } from "@/features/auth/model/session";
+import { HomePage } from "@/views/HomePage";
 
 export default async function Home() {
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
 
   return (
     <main>
-      <LoginButton />
-      <LogoutButton />
-      <h1>Next Boilerplate</h1>
-      <h2>Server Session</h2>
-      <pre>{JSON.stringify(session)}</pre>
-      <h2>Client Call</h2>
-      <User />
+      <HomePage />
     </main>
   );
 }

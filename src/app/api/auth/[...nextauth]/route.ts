@@ -1,7 +1,11 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-import { signInUseCase } from "@/modules/user/user.use-case";
+import { createSignInUseCase } from "@/features/auth/model/auth.use-case";
+import { userRepository } from "@/entities/user/model/user.repository";
+import { ROUTES } from "@/shared/config/routes";
+
+const signInUseCase = createSignInUseCase(userRepository);
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -22,22 +26,26 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
+        try {
+          const user = await signInUseCase(
+            credentials.email,
+            credentials.password
+          );
 
-        const user = await signInUseCase(
-          credentials.email,
-          credentials.password
-        );
-
-        return {
-          id: user.id + "",
-          email: user.email,
-          name: user.name,
-        };
-      },
+          return {
+            id: user.id + "",
+            email: user.email,
+            name: user.name,
+          };
+        } catch (e) {
+          // Optionally log error here
+          return null;
+        }
+      }
     }),
   ],
   pages: {
-    signIn: "/login",
+    signIn: ROUTES.login,
   },
   callbacks: {
     session: ({ session, token }) => {

@@ -1,4 +1,4 @@
-import { database } from "@/db";
+import { database } from "@/shared/lib/db";
 import { UserInput } from "./user.schema";
 
 export async function createUser(input: UserInput) {
@@ -18,6 +18,7 @@ export async function findUserByEmail(email: string) {
 export async function findUsers() {
   return database.user.findMany({
     select: {
+      id: true,
       email: true,
       name: true,
     },
@@ -27,10 +28,6 @@ export async function findUsers() {
 export async function findUser(id: number) {
   return database.user.findUnique({
     where: { id },
-    select: {
-      email: true,
-      name: true,
-    },
   });
 }
 

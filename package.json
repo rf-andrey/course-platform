@@ -13,6 +13,14 @@
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
+  "lint-staged": {
+    "*.js": ["eslint --fix", "git add"],
+    "*.jsx": ["eslint --fix", "git add"],
+    "*.ts": ["eslint --fix", "git add"],
+    "*.tsx": ["eslint --fix", "git add"],
+    "*.css": ["eslint --fix", "git add"],
+    "*.scss": ["eslint --fix", "git add"]
+  },
   "dependencies": {
     "@prisma/client": "^5.16.1",
     "bcrypt": "^5.1.1",
@@ -32,6 +40,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
     "prettier": "^3.6.2",
     "prisma": "^5.16.1",
     "ts-node": "^10.9.2",

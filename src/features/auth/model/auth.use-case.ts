@@ -6,14 +6,17 @@ type AuthUser = {
   id: number;
   email: string;
   name: string;
-}
+};
 
 export function createSignInUseCase(userRepo: UserRepository) {
-  return async function signInUseCase(email: string, password: string): Promise<AuthUser> {
+  return async function signInUseCase(
+    email: string,
+    password: string
+  ): Promise<AuthUser> {
     const user = await userRepo.findUserByEmail(email);
 
     if (!user) {
-      await bcrypt.compare(password, "$2b$10$invalidsaltinvalidsaltinv");
+      await bcrypt.compare(password, '$2b$10$invalidsaltinvalidsaltinv');
       throw new Error('Invalid email or password'); // Login Error
     }
 
@@ -28,5 +31,5 @@ export function createSignInUseCase(userRepo: UserRepository) {
       email: user.email,
       name: user.name,
     };
-  }
+  };
 }

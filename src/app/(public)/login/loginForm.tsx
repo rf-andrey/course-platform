@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useFormState } from "react-dom";
+import React from 'react';
+import { useFormState } from 'react-dom';
 
-import { loginAction } from "./actions";
+import { loginAction } from './actions';
 
 export const Login = () => {
   const [state, formAction] = useFormState(loginAction, undefined);

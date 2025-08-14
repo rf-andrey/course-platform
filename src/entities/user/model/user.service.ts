@@ -1,5 +1,5 @@
-import { database } from "@/shared/lib/db";
-import { UserInput } from "./user.schema";
+import { database } from '@/shared/lib/db';
+import { UserInput } from './user.schema';
 
 export async function createUser(input: UserInput) {
   const user = await database.user.create({

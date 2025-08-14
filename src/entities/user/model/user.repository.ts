@@ -1,4 +1,4 @@
-import { UserInput, UserResponse, User } from "./user.schema";
+import { UserInput, UserResponse, User } from './user.schema';
 import {
   createUser,
   deleteUser,
@@ -6,7 +6,7 @@ import {
   findUserByEmail,
   findUsers,
   updateUser,
-} from "./user.service";
+} from './user.service';
 
 export interface UserRepository {
   findUserByEmail(email: string): Promise<User | null>;

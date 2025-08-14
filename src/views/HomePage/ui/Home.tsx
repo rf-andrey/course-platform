@@ -1,5 +1,5 @@
-import SessionPanel from "@/widgets/SessionPanel";
-import { User } from "./user";
+import SessionPanel from '@/widgets/SessionPanel';
+import { User } from './user';
 
 export async function Home() {
   return (

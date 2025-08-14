@@ -1,16 +1,16 @@
-import { signIn } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { Login } from "./loginForm";
+import { signIn } from 'next-auth/react';
+import { redirect } from 'next/navigation';
+import { Login } from './loginForm';
 
 export default function LoginPage() {
   const loginAction = async (formData: FormData) => {
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
 
     try {
-      const user = await signIn("credentials", { email, password });
+      const user = await signIn('credentials', { email, password });
       console.log(user);
-      redirect("/dashboard");
+      redirect('/dashboard');
     } catch (error) {
       if (error instanceof Error) {
         return error.message;

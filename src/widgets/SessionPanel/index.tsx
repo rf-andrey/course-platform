@@ -1,10 +1,10 @@
-import { getSession } from "@/features/auth/model/session";
-import { LoginButton, LogoutButton } from "./ui/auth";
+import { getSession } from '@/features/auth/model/session';
+import { LoginButton, LogoutButton } from './ui/auth';
 
 export default async function SessionPanel() {
   const session = await getSession();
 
-  return(
+  return (
     <section>
       {session ? (
         <>

@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
-import { redirect } from "next/navigation";
-import { checkSession } from "@/features/auth/model/session";
-import { ROUTES } from "@/shared/config/routes";
+import { ReactNode } from 'react';
+import { redirect } from 'next/navigation';
+import { checkSession } from '@/features/auth/model/session';
+import { ROUTES } from '@/shared/config/routes';
 
 type LayoutProps = {
   children: ReactNode;

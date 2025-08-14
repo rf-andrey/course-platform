@@ -1,17 +1,7 @@
-import {
-  createUser,
-  deleteUser,
-  findUser,
-  findUserByEmail,
-  findUsers,
-  updateUser,
-} from "./user.service";
-import { UserInput } from "./user.schema";
-import { UserRepository } from "./user.repository";
+import { UserInput } from './user.schema';
+import { UserRepository } from './user.repository';
 
-export function createCreateUserUseCase(
-  userRepo: UserRepository
-) {
+export function createCreateUserUseCase(userRepo: UserRepository) {
   return async function createUserUseCase(
     email: string,
     password: string,
@@ -29,33 +19,25 @@ export function createCreateUserUseCase(
   };
 }
 
-export function createFindUserByIdUseCase(
-  userRepo: UserRepository
-) {
+export function createFindUserByIdUseCase(userRepo: UserRepository) {
   return async function findUserByIdUseCase(id: number) {
     return userRepo.findUserById(id);
   };
 }
 
-export function createFindUserByEmailUseCase(
-  userRepo: UserRepository
-) {
+export function createFindUserByEmailUseCase(userRepo: UserRepository) {
   return async function findUserByEmailUseCase(email: string) {
     return userRepo.findUserByEmail(email);
   };
 }
 
-export function createFindAllUsersUseCase(
-  userRepo: UserRepository
-) {
+export function createFindAllUsersUseCase(userRepo: UserRepository) {
   return async function findAllUsersUseCase() {
     return userRepo.findAllUsers();
   };
 }
 
-export function createUpdateUserUseCase(
-  userRepo: UserRepository
-) {
+export function createUpdateUserUseCase(userRepo: UserRepository) {
   return async function updateUserUseCase(id: number, input: UserInput) {
     const existingUser = await userRepo.findUserById(id);
 
@@ -69,9 +51,7 @@ export function createUpdateUserUseCase(
   };
 }
 
-export function createDeleteUserUseCase(
-  userRepo: UserRepository
-) {
+export function createDeleteUserUseCase(userRepo: UserRepository) {
   return async function deleteUserUseCase(id: number) {
     const existingUser = await userRepo.findUserById(id);
 

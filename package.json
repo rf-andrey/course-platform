@@ -7,19 +7,33 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
+    "lint:css": "stylelint '**/*.{css,scss}'",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:seed": "prisma db seed"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "lint-staged": {
-    "*.js": ["eslint --fix"],
-    "*.jsx": ["eslint --fix"],
-    "*.ts": ["eslint --fix"],
-    "*.tsx": ["eslint --fix"],
-    "*.css": ["eslint --fix"],
-    "*.scss": ["eslint --fix"]
+    "*.js": [
+      "eslint --fix"
+    ],
+    "*.jsx": [
+      "eslint --fix"
+    ],
+    "*.ts": [
+      "eslint --fix"
+    ],
+    "*.tsx": [
+      "eslint --fix"
+    ],
+    "*.css": [
+      "stylelint --fix"
+    ],
+    "*.scss": [
+      "stylelint --fix"
+    ]
   },
   "dependencies": {
     "@prisma/client": "^5.16.1",
@@ -41,8 +55,13 @@
     "eslint-config-next": "14.2.4",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.5",
+    "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "prisma": "^5.16.1",
+    "stylelint": "^16.23.1",
+    "stylelint-config-standard": "^39.0.0",
+    "stylelint-config-tailwindcss": "^1.0.0",
+    "tailwindcss": "^4.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5"
   },

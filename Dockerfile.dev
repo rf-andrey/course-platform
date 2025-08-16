@@ -1,0 +1,14 @@
+# Testar versões anteriores do node e do postgres
+FROM node:24-slim
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y openssl libssl-dev libstdc++6 make gcc g++ python3 && rm -rf /var/lib/apt/lists/*
+
+COPY package.json yarn.lock* ./
+RUN yarn install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD sh -c "yarn prisma generate && yarn prisma migrate deploy && yarn db:seed && yarn dev"

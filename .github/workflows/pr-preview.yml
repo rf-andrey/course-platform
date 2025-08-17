@@ -38,8 +38,7 @@ jobs:
           project_id: ${{ secrets.NEON_PROJECT_ID }}
           branch_name: pr-${{ github.event.pull_request.number }}
           database: prdb
-        env:
-          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          api_key: ${{ secrets.NEON_API_KEY }}
 
       # 5️⃣ Atualizar DATABASE_URL com o banco efêmero
       - name: Set ephemeral DATABASE_URL

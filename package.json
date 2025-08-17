@@ -10,7 +10,8 @@
     "lint:css": "stylelint '**/*.{css,scss}'",
     "format": "prettier --write .",
     "prepare": "husky",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "db:migrate": "prisma migrate deploy"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

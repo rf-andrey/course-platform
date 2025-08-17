@@ -1,36 +1,36 @@
-name: Deploy Preview
+name: PR Preview
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches:
+      - main
 
 jobs:
   preview:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+      NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+      NEON_PROJECT_ID: ${{ secrets.NEON_PROJECT_ID }}
 
     steps:
+      # 1️⃣ Checkout do repositório
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      # 2️⃣ Setup Node 20
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
+          cache: 'yarn'
 
+      # 3️⃣ Instalar dependências
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Debug secret
-        run: |
-          if [ -z "$NEON_API_KEY" ]; then
-            echo "NEON_API_KEY is empty"
-            exit 1
-          else
-            echo "NEON_API_KEY is set"
-          fi
-        env:
-          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
-
+      # 4️⃣ Criar banco efêmero no Neon
       - name: Create Neon branch for PR
         id: neon
         uses: neondatabase/create-branch-action@v4
@@ -41,34 +41,41 @@ jobs:
         env:
           NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
 
-      - name: Run Prisma migrations
+      # 5️⃣ Atualizar DATABASE_URL com o banco efêmero
+      - name: Set ephemeral DATABASE_URL
+        run: echo "DATABASE_URL=${{ steps.neon.outputs.database_url }}" >> $GITHUB_ENV
+
+      # 6️⃣ Gerar Prisma Client
+      - name: Prisma generate
+        run: yarn prisma generate
+
+      # 7️⃣ Aplicar migrations
+      - name: Apply migrations
         run: yarn db:migrate
-        env:
-          DATABASE_URL: ${{ steps.neon.outputs.database_url }}
 
-      - name: Seed database
+      # 8️⃣ Rodar seed (opcional)
+      - name: Run seed
         run: yarn db:seed
-        env:
-          DATABASE_URL: ${{ steps.neon.outputs.database_url }}
 
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
+      # 9️⃣ Build Next.js
+      - name: Build Next.js
+        run: yarn build
+
+      # 🔟 Deploy no Vercel (preview)
+      - name: Deploy Preview on Vercel
+        uses: amondnet/vercel-action@v22
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          DATABASE_URL: ${{ steps.neon.outputs.database_url }}
+          working-directory: .
+          prod: false
+          alias-domains: pr-${{ github.event.pull_request.number }}.yourdomain.com
 
-      # Comentar o PR com o link de preview
-      - name: Comment PR with Preview URL
-        uses: actions/github-script@v6
+      # 11️⃣ Comentar a URL no PR
+      - name: Comment preview URL on PR
+        uses: peter-evans/create-or-update-comment@v4
         with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `🚀 Preview disponível em: https://pr-${context.issue.number}.yourapp.vercel.app`
-            })
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: '🚀 Preview available: [${{ steps.vercel.outputs.preview-url }}](${{ steps.vercel.outputs.preview-url }})'

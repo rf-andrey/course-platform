@@ -26,7 +26,7 @@ jobs:
         with:
           project_id: ${{ secrets.NEON_PROJECT_ID }}
           branch_name: pr-${{ github.event.pull_request.number }}
-          database_name: prdb
+          database: prdb
         env:
           NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
 

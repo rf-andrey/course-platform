@@ -13,9 +13,6 @@
     "db:seed": "prisma db seed",
     "db:migrate": "prisma migrate deploy"
   },
-  "prisma": {
-    "seed": "node --loader ts-node/esm prisma/seed.ts"
-  },
   "lint-staged": {
     "*.js": [
       "eslint --fix"

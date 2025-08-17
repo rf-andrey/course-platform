@@ -12,7 +12,7 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
       NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
-      NEON_PROJECT_ID: ${{ secrets.NEON_PROJECT_ID }}
+      NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }}
 
     steps:
       # 1️⃣ Checkout do repositório
@@ -35,7 +35,7 @@ jobs:
         id: neon
         uses: neondatabase/create-branch-action@v4
         with:
-          project_id: ${{ secrets.NEON_PROJECT_ID }}
+          project_id: ${{ vars.NEON_PROJECT_ID }}
           branch_name: pr-${{ github.event.pull_request.number }}
           api_key: ${{ secrets.NEON_API_KEY }}
 
@@ -64,8 +64,8 @@ jobs:
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-org-id: ${{ vars.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ vars.VERCEL_PROJECT_ID }}
           working-directory: .
           prod: false
           alias-domains: pr-${{ github.event.pull_request.number }}.yourdomain.com

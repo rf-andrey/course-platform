@@ -6,7 +6,6 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: course_platform
-      POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - 5432:5432
     volumes:
@@ -21,7 +20,7 @@ services:
     container_name: next_app
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.prod
     env_file:
       - .env
     environment:

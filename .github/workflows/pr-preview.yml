@@ -41,7 +41,7 @@ jobs:
 
       # 5️⃣ Atualizar DATABASE_URL com o banco efêmero
       - name: Set ephemeral DATABASE_URL
-        run: echo "DATABASE_URL=${{ steps.neon.outputs.database_url }}" >> $GITHUB_ENV
+        run: echo "DATABASE_URL=${{ steps.neon.outputs.db_url_with_pooler }}" >> $GITHUB_ENV
 
       # 6️⃣ Gerar Prisma Client
       - name: Prisma generate

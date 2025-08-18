@@ -11,4 +11,7 @@ export const authOptions: NextAuthOptions = {
     session: sessionCallback,
     jwt: jwtCallback,
   },
+  secret: process.env.NEXTAUTH_SECRET,
 };
+
+

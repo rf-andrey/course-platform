@@ -68,7 +68,6 @@ jobs:
           vercel-project-id: ${{ vars.VERCEL_PROJECT_ID }}
           working-directory: .
           scope: ${{ vars.VERCEL_ORG_ID }}
-          alias-domains: pr-${{ github.event.pull_request.number }}.yourdomain.com
 
       # 11️⃣ Comentar a URL no PR
       - name: Comment preview URL on PR

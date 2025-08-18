@@ -52,7 +52,7 @@ jobs:
 
       # 7️⃣ Injetar DATABASE_URL no Vercel
       - name: Set Vercel env for Preview
-        run: vercel env add DATABASE_URL $DATABASE_URL --preview --token ${{ secrets.VERCEL_TOKEN }} --yes
+        run: vercel env add DATABASE_URL $DATABASE_URL preview --token ${{ secrets.VERCEL_TOKEN }} --yes
 
       # 8️⃣ Gerar Prisma Client
       - name: Prisma generate

@@ -17,4 +17,4 @@ jobs:
         with:
           project_id: ${{ secrets.NEON_PROJECT_ID }}
           branch: pr-${{ github.event.pull_request.number }}
-          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          api_key: ${{ secrets.NEON_API_KEY }}

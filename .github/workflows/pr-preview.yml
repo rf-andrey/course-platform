@@ -61,6 +61,7 @@ jobs:
 
       # 🔟 Deploy no Vercel (preview)
       - name: Deploy Preview on Vercel
+        id: vercel
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}

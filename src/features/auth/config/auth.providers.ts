@@ -11,11 +11,14 @@ export const credentialsProvider = CredentialsProvider({
     password: { label: 'Password', type: 'password' },
   },
   async authorize(credentials) {
+    console.log("🔑 authorize called with:", credentials);
     if (!credentials?.email || !credentials?.password) return null;
     try {
       const user = await signInUseCase(credentials.email, credentials.password);
+      console.log("✅ user authenticated:", user.email);
       return { id: String(user.id), email: user.email, name: user.name };
-    } catch {
+    } catch (err) {
+      console.error("❌ auth failed:", err);
       return null;
     }
   },

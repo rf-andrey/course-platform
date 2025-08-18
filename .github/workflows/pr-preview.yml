@@ -26,11 +26,15 @@ jobs:
           node-version: 20
           cache: 'yarn'
 
-      # 3️⃣ Instalar dependências
+      # 3️⃣ Instalar Vercel CLI
+      - name: Install Vercel CLI
+        run: npm i -g vercel@latest
+
+      # 4️⃣ Instalar dependências
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      # 4️⃣ Criar banco efêmero no Neon
+      # 5️⃣ Criar banco efêmero no Neon
       - name: Create Neon branch for PR
         id: neon
         uses: neondatabase/create-branch-action@v4
@@ -39,31 +43,33 @@ jobs:
           branch_name: pr-${{ github.event.pull_request.number }}
           api_key: ${{ secrets.NEON_API_KEY }}
 
-      # 5️⃣ Atualizar DATABASE_URL com o banco efêmero
+      # 6️⃣ Atualizar DATABASE_URL com o banco efêmero
       - name: Set ephemeral DATABASE_URL
         run: echo "DATABASE_URL=${{ steps.neon.outputs.db_url_with_pooler }}" >> $GITHUB_ENV
 
-      # 6️⃣ Injetar DATABASE_URL no Vercel
+      # 7️⃣ Injetar DATABASE_URL no Vercel
       - name: Set Vercel env for Preview
         run: vercel env add DATABASE_URL ${{ steps.neon.outputs.db_url_with_pooler }} preview
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
-      # 7️⃣ Gerar Prisma Client
+      # 8️⃣ Gerar Prisma Client
       - name: Prisma generate
         run: yarn prisma generate
 
-      # 8️⃣ Aplicar migrations
+      # 9️⃣ Aplicar migrations
       - name: Apply migrations
         run: yarn db:migrate
 
-      # 9️⃣ Rodar seed (opcional)
+      # 🔟 Rodar seed (opcional)
       - name: Run seed
         run: yarn db:seed
 
-      # 🔟 Build Next.js
+      # 1️⃣1️⃣ Build Next.js
       - name: Build Next.js
         run: yarn build
 
-      # 1️⃣1️⃣ Deploy no Vercel (preview)
+      # 1️⃣2️⃣ Deploy no Vercel (preview)
       - name: Deploy Preview on Vercel
         id: vercel
         uses: amondnet/vercel-action@v25
@@ -74,7 +80,7 @@ jobs:
           working-directory: .
           scope: ${{ vars.VERCEL_ORG_ID }}
 
-      # 1️⃣2️⃣ Comentar a URL no PR
+      # 1️⃣3️⃣ Comentar a URL no PR
       - name: Comment preview URL on PR
         uses: peter-evans/create-or-update-comment@v4
         with:

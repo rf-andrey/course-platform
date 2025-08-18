@@ -73,6 +73,6 @@ jobs:
       - name: Comment preview URL on PR
         uses: peter-evans/create-or-update-comment@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
           issue-number: ${{ github.event.pull_request.number }}
           body: '🚀 Preview available: [${{ steps.vercel.outputs.preview-url }}](${{ steps.vercel.outputs.preview-url }})'

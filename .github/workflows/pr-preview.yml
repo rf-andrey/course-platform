@@ -43,23 +43,27 @@ jobs:
       - name: Set ephemeral DATABASE_URL
         run: echo "DATABASE_URL=${{ steps.neon.outputs.db_url_with_pooler }}" >> $GITHUB_ENV
 
-      # 6️⃣ Gerar Prisma Client
+      # 6️⃣ Injetar DATABASE_URL no Vercel
+      - name: Set Vercel env for Preview
+        run: vercel env add DATABASE_URL ${{ steps.neon.outputs.db_url_with_pooler }} preview
+
+      # 7️⃣ Gerar Prisma Client
       - name: Prisma generate
         run: yarn prisma generate
 
-      # 7️⃣ Aplicar migrations
+      # 8️⃣ Aplicar migrations
       - name: Apply migrations
         run: yarn db:migrate
 
-      # 8️⃣ Rodar seed (opcional)
+      # 9️⃣ Rodar seed (opcional)
       - name: Run seed
         run: yarn db:seed
 
-      # 9️⃣ Build Next.js
+      # 🔟 Build Next.js
       - name: Build Next.js
         run: yarn build
 
-      # 🔟 Deploy no Vercel (preview)
+      # 1️⃣1️⃣ Deploy no Vercel (preview)
       - name: Deploy Preview on Vercel
         id: vercel
         uses: amondnet/vercel-action@v25
@@ -70,7 +74,7 @@ jobs:
           working-directory: .
           scope: ${{ vars.VERCEL_ORG_ID }}
 
-      # 11️⃣ Comentar a URL no PR
+      # 1️⃣2️⃣ Comentar a URL no PR
       - name: Comment preview URL on PR
         uses: peter-evans/create-or-update-comment@v4
         with:

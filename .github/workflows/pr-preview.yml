@@ -51,8 +51,32 @@ jobs:
         run: vercel link --confirm --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ vars.VERCEL_ORG_ID}}
 
       # 7️⃣ Injetar DATABASE_URL no Vercel
-      - name: Set Vercel env for Preview
-        run: vercel env add DATABASE_URL $DATABASE_URL preview --token ${{ secrets.VERCEL_TOKEN }}
+      - name: Set ephemeral DATABASE_URL on Vercel
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          DATABASE_URL: ${{ steps.neon.outputs.db_url }}
+        run: |
+          # Primeiro, verifica se a variável já existe
+          EXISTING_ID=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+            "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_ID/env" \
+            | jq -r --arg name "DATABASE_URL" '.envs[] | select(.key==$name) | .id // empty')
+
+          if [ -n "$EXISTING_ID" ]; then
+            echo "Updating existing DATABASE_URL..."
+            curl -s -X PATCH \
+              -H "Authorization: Bearer $VERCEL_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"value\":\"$DATABASE_URL\",\"target\":[\"preview\"]}" \
+              "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_ID/env/$EXISTING_ID"
+          else
+            echo "Creating new DATABASE_URL..."
+            curl -s -X POST \
+              -H "Authorization: Bearer $VERCEL_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"key\":\"DATABASE_URL\",\"value\":\"$DATABASE_URL\",\"target\":[\"preview\"]}" \
+              "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_ID/env"
+          fi
 
       # 8️⃣ Gerar Prisma Client
       - name: Prisma generate

@@ -47,9 +47,12 @@ jobs:
       - name: Set ephemeral DATABASE_URL
         run: echo "DATABASE_URL=${{ steps.neon.outputs.db_url_with_pooler }}" >> $GITHUB_ENV
 
+      - name: Link Vercel project
+        run: vercel link --confirm --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ vars.VERCEL_ORG_ID}}
+
       # 7️⃣ Injetar DATABASE_URL no Vercel
       - name: Set Vercel env for Preview
-        run: vercel env add DATABASE_URL ${{ steps.neon.outputs.db_url_with_pooler }} preview --project ${{ secrets.VERCEL_PROJECT_ID }} --token ${{ secrets.VERCEL_TOKEN }}
+        run: vercel env add DATABASE_URL ${{ steps.neon.outputs.db_url_with_pooler }} preview --token ${{ secrets.VERCEL_TOKEN }}
 
       # 8️⃣ Gerar Prisma Client
       - name: Prisma generate

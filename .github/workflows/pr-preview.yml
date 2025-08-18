@@ -58,7 +58,7 @@ jobs:
           else
             echo "DATABASE_URL não existe no Vercel para preview"
           fi
-          vercel env add DATABASE_URL ${{ steps.neon.outputs.db_url }} preview --token ${{ secrets.VERCEL_TOKEN }}
+          vercel env add DATABASE_URL $DATABASE_URL preview --token ${{ secrets.VERCEL_TOKEN }}
 
       # 8️⃣ Gerar Prisma Client
       - name: Prisma generate

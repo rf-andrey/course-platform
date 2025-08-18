@@ -1,0 +1,114 @@
+name: PR Preview
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+      NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+      NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }}
+
+    steps:
+      # 1️⃣ Checkout do repositório
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      # 2️⃣ Setup Node 20
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
+
+      # 3️⃣ Instalar Vercel CLI
+      - name: Install Vercel CLI
+        run: npm i -g vercel@latest
+
+      # 4️⃣ Instalar dependências
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      # 5️⃣ Criar banco efêmero no Neon
+      - name: Create Neon branch for PR
+        id: neon
+        uses: neondatabase/create-branch-action@v4
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch_name: pr-${{ github.event.pull_request.number }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+
+      # 6️⃣ Atualizar DATABASE_URL com o banco efêmero
+      - name: Set ephemeral DATABASE_URL
+        run: echo "DATABASE_URL=${{ steps.neon.outputs.db_url }}" >> $GITHUB_ENV
+
+      - name: Link Vercel project
+        run: vercel link --confirm --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ vars.VERCEL_ORG_ID}}
+
+      # 7️⃣ Injetar DATABASE_URL no Vercel
+      - name: Set ephemeral DATABASE_URL on Vercel
+        env:
+          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          DATABASE_URL: ${{ steps.neon.outputs.db_url }}
+        run: |
+          # Primeiro, verifica se a variável já existe
+          EXISTING_ID=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+            "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_ID/env" \
+            | jq -r --arg name "DATABASE_URL" '.envs[]? // [] | select(.key==$name) | .id // empty')
+
+          if [ -n "$EXISTING_ID" ]; then
+            echo "Updating existing DATABASE_URL..."
+            curl -s -X PATCH \
+              -H "Authorization: Bearer $VERCEL_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"value\":\"$DATABASE_URL\",\"target\":[\"preview\"]}" \
+              "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_ID/env/$EXISTING_ID"
+          else
+            echo "Creating new DATABASE_URL..."
+            curl -s -X POST \
+              -H "Authorization: Bearer $VERCEL_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"key\":\"DATABASE_URL\",\"value\":\"$DATABASE_URL\",\"target\":[\"preview\"]}" \
+              "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_ID/env"
+          fi
+
+      # 8️⃣ Gerar Prisma Client
+      - name: Prisma generate
+        run: yarn prisma generate
+
+      # 9️⃣ Aplicar migrations
+      - name: Apply migrations
+        run: yarn db:migrate
+
+      # 🔟 Rodar seed (opcional)
+      - name: Run seed
+        run: yarn db:seed
+
+      # 1️⃣1️⃣ Build Next.js
+      - name: Build Next.js
+        run: yarn build
+
+      # 1️⃣2️⃣ Deploy no Vercel (preview)
+      - name: Deploy Preview on Vercel
+        id: vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ vars.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ vars.VERCEL_PROJECT_ID }}
+          working-directory: .
+          scope: ${{ vars.VERCEL_ORG_ID }}
+
+      # 1️⃣3️⃣ Comentar a URL no PR
+      - name: Comment preview URL on PR
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: '🚀 Preview available: [${{ steps.vercel.outputs.preview-url }}](${{ steps.vercel.outputs.preview-url }})'

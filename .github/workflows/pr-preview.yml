@@ -60,7 +60,7 @@ jobs:
           # Primeiro, verifica se a variável já existe
           EXISTING_ID=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
             "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_ID/env" \
-            | jq -r --arg name "DATABASE_URL" '.envs[] | select(.key==$name) | .id // empty')
+            | jq -r --arg name "DATABASE_URL" '.envs[]? // [] | select(.key==$name) | .id // empty')
 
           if [ -n "$EXISTING_ID" ]; then
             echo "Updating existing DATABASE_URL..."

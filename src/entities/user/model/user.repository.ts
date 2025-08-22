@@ -1,4 +1,4 @@
-import { UserInput, UserResponse, User } from './user.schema';
+import { CreateUserPayload, UpdateUserPayload, UserResponsePayload, UserPayload } from './user.schema';
 import {
   createUser,
   deleteUser,
@@ -9,16 +9,16 @@ import {
 } from './user.service';
 
 export interface UserRepository {
-  findUserByEmail(email: string): Promise<User | null>;
-  findUserById(id: number): Promise<User | null>;
-  findAllUsers(): Promise<UserResponse[]>;
-  createUser(input: UserInput): Promise<UserResponse>;
-  updateUser(id: number, input: UserInput): Promise<UserResponse>;
-  deleteUser(id: number): Promise<UserResponse | null>;
+  findUserByEmail(email: string): Promise<UserPayload | null>;
+  findUserById(id: number): Promise<UserPayload | null>;
+  findAllUsers(): Promise<UserResponsePayload[]>;
+  createUser(input: CreateUserPayload): Promise<UserResponsePayload>;
+  updateUser(id: number, input: UpdateUserPayload): Promise<UserResponsePayload>;
+  deleteUser(id: number): Promise<UserResponsePayload | null>;
 }
 
 export const userRepository: UserRepository = {
-  async findUserByEmail(email: string): Promise<User | null> {
+  async findUserByEmail(email: string): Promise<UserPayload | null> {
     const user = await findUserByEmail(email);
     if (!user || user.name === null) {
       return null;
@@ -27,7 +27,7 @@ export const userRepository: UserRepository = {
     return { id, email: userEmail, name, password };
   },
 
-  async findUserById(id: number): Promise<User | null> {
+  async findUserById(id: number): Promise<UserPayload | null> {
     const user = await findUser(id);
     if (!user || user.name === null) {
       return null;
@@ -36,26 +36,26 @@ export const userRepository: UserRepository = {
     return { id: userId, email, name: name as string, password };
   },
 
-  async findAllUsers(): Promise<UserResponse[]> {
+  async findAllUsers(): Promise<UserResponsePayload[]> {
     const users = await findUsers();
     return users
       .filter((user) => user.name !== null)
       .map(({ id, email, name }) => ({ id, email, name: name as string }));
   },
 
-  async createUser(input: UserInput): Promise<UserResponse> {
+  async createUser(input: CreateUserPayload): Promise<UserResponsePayload> {
     const user = await createUser(input);
     const { id, email, name } = user;
     return { id, email, name: name as string };
   },
 
-  async updateUser(id: number, input: UserInput): Promise<UserResponse> {
+  async updateUser(id: number, input: UpdateUserPayload): Promise<UserResponsePayload> {
     const user = await updateUser({ id, ...input });
     const { id: userId, email, name } = user;
     return { id: userId, email, name: name as string };
   },
 
-  async deleteUser(id: number): Promise<UserResponse | null> {
+  async deleteUser(id: number): Promise<UserResponsePayload | null> {
     const user = await deleteUser(id);
     if (!user || user.name === null) {
       return null;

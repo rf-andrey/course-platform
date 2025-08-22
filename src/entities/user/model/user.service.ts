@@ -1,7 +1,7 @@
 import { database } from '@/shared/lib/db';
-import { UserInput } from './user.schema';
+import { CreateUserPayload, UpdateUserPayload } from './user.schema';
 
-export async function createUser(input: UserInput) {
+export async function createUser(input: CreateUserPayload) {
   const user = await database.user.create({
     data: input,
   });
@@ -36,7 +36,7 @@ export async function updateUser({
   email,
   password,
   id,
-}: UserInput & { id: number }) {
+}: UpdateUserPayload & { id: number }) {
   const user = await database.user.update({
     where: { id },
     data: {

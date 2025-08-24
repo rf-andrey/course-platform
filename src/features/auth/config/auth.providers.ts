@@ -14,9 +14,10 @@ export const credentialsProvider = CredentialsProvider({
     console.log("🔑 authorize called with:", credentials);
     if (!credentials?.email || !credentials?.password) return null;
     try {
-      const user = await signInUseCase(credentials.email, credentials.password);
+      const userResponse = await signInUseCase(credentials.email, credentials.password);
+      const { user } = userResponse;
       console.log("✅ user authenticated:", user.email);
-      return { id: String(user.id), email: user.email, name: user.name };
+      return { id: String(user.id), email: user.email, name: user.name, refreshToken: userResponse.refreshToken};
     } catch (err) {
       console.error("❌ auth failed:", err);
       return null;

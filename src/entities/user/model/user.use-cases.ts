@@ -27,6 +27,12 @@ export function createFindUserByEmailUseCase(userRepo: UserRepository) {
   };
 }
 
+export function createFindUserByRefreshTokenUseCase(userRepo: UserRepository) {
+  return async function findUserByRefreshTokenUseCase(refreshToken: string) {
+    return userRepo.findUserByRefreshToken(refreshToken);
+  };
+}
+
 export function createFindAllUsersUseCase(userRepo: UserRepository) {
   return async function findAllUsersUseCase() {
     return userRepo.findAllUsers();
@@ -44,6 +50,12 @@ export function createUpdateUserUseCase(userRepo: UserRepository) {
     const user = await userRepo.updateUser(id, input);
 
     return user;
+  };
+}
+
+export function createSaveRefreshTokenUseCase(userRepo: UserRepository) {
+  return async function saveRefreshTokenUseCase(id: number, refreshToken: string) {
+    return userRepo.saveRefreshToken(id, refreshToken);
   };
 }
 

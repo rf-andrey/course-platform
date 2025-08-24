@@ -6,6 +6,8 @@ import {
   createFindAllUsersUseCase,
   createUpdateUserUseCase,
   createDeleteUserUseCase,
+  createFindUserByRefreshTokenUseCase,
+  createSaveRefreshTokenUseCase
 } from './user.use-cases';
 
 export const createUserUseCase = createCreateUserUseCase(userRepository);
@@ -14,3 +16,5 @@ export const findUserByEmailUseCase = createFindUserByEmailUseCase(userRepositor
 export const findAllUsersUseCase = createFindAllUsersUseCase(userRepository);
 export const updateUserUseCase = createUpdateUserUseCase(userRepository);
 export const deleteUserUseCase = createDeleteUserUseCase(userRepository);
+export const findUserByRefreshTokenUseCase = createFindUserByRefreshTokenUseCase(userRepository);
+export const saveRefreshTokenUseCase = createSaveRefreshTokenUseCase(userRepository);

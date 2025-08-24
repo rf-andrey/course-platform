@@ -8,11 +8,16 @@ export const sessionCallback = (params: {
 }) => {
   const { session, token } = params;
   session.user = token.user as any;
+  session.refreshToken = token.refreshToken;
+  
   return session;
 };
 
 export const jwtCallback = (params: { token: JWT; user?: User }) => {
   const { token, user } = params;
-  if (user) token.user = user;
+  if (user) {
+    token.user = user;
+    token.refreshToken = user.refreshToken;
+  }
   return token;
 };

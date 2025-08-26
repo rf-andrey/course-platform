@@ -20,6 +20,7 @@ export async function POST() {
 
   const res = NextResponse.json({
     accessToken: newAccessToken,
+    user: user,
     message: 'Token refreshed'
   });
 

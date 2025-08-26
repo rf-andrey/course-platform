@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { signIn } from 'next-auth/react';
+import { useSessionStore } from '../model/session/useSessionStore';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || '/api',
@@ -37,7 +38,10 @@ api.interceptors.response.use(
         const res = await api.post('/auth/refresh');
         const newToken = res.data?.accessToken;
 
-        localStorage.setItem('token', newToken);
+        useSessionStore.getState().setSession({
+          accessToken: newToken,
+          user: res.data?.user
+        })
 
         api.defaults.headers['Authorization'] = `Bearer ${newToken}`;
         processQueue(null, newToken);
@@ -56,7 +60,7 @@ api.interceptors.response.use(
 );
 
 api.interceptors.request.use((config) => {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const token = useSessionStore.getState().accessToken;
 
   if (token) config.headers['Authorization'] = `Bearer ${token}`;
 

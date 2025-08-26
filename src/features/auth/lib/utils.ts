@@ -1,12 +1,17 @@
-import bcrypt from 'bcrypt';
-import { randomBytes } from 'node:crypto';
+import { hashSync, compare } from 'bcryptjs';
+import { randomBytes } from 'crypto';
+import { encode, decode } from 'next-auth/jwt';
+import { findUserByIdUseCase } from '@/entities/user/model';
+
+const JWT_SECRET = process.env.NEXTAUTH_SECRET!;
+const ACCESS_TOKEN_EXPIRATION = 2 * 60;
 
 export async function hashPassword(password: string) {
-  return bcrypt.hashSync(password, 12);
+  return hashSync(password, 12);
 }
 
 export async function comparePassword(password: string, hashed: string) {
-  return bcrypt.compare(password, hashed);
+  return compare(password, hashed);
 }
 
 export function generateRefreshToken() {

@@ -22,63 +22,67 @@ export interface UserRepository {
 }
 
 export const userRepository: UserRepository = {
-  async findUserByEmail(email: string): Promise<UserPayload | null> {
+  async findUserByEmail(email) {
     const user = await findUserByEmail(email);
-    if (!user || user.name === null) {
-      return null;
+    if (!user || !user.name) return null;
+
+    return {
+      ...user,
+      name: user.name,
+      refreshToken: user.refreshToken || undefined,
     }
-    const { id, email: userEmail, name, password } = user;
-    return { id, email: userEmail, name, password };
   },
 
-  async findUserById(id: number): Promise<UserPayload | null> {
+  async findUserById(id) {
     const user = await findUser(id);
-    if (!user || user.name === null) {
-      return null;
-    }
-    const { id: userId, email, name, password } = user;
-    return { id: userId, email, name: name as string, password };
+    if (!user || !user.name) return null;
+
+    return {
+      ...user,
+      name: user.name,
+      refreshToken: user.refreshToken || undefined,
+    };
   },
 
-  async findUserByRefreshToken(refreshToken: string): Promise<UserPayload | null> {
+  async findUserByRefreshToken(refreshToken) {
     const user = await findUserByRefreshToken(refreshToken);
-    if (!user || user.name === null) {
-      return null;
-    }
-    const { id, email, name, password } = user;
-    return { id, email, name, password };
+    if (!user || !user.name) return null;
+
+    return {
+      ...user,
+      name: user.name,
+      refreshToken: user.refreshToken || undefined,
+    };
   },
 
-  async findAllUsers(): Promise<UserResponsePayload[]> {
+  async findAllUsers() {
     const users = await findUsers();
     return users
-      .filter((user) => user.name !== null)
-      .map(({ id, email, name }) => ({ id, email, name: name as string }));
+      .filter((user) => user.name)
+      .map(({ id, email, name }) => ({ id, email, name: name || '' }));
   },
 
-  async createUser(input: CreateUserPayload): Promise<UserResponsePayload> {
+  async createUser(input) {
     const user = await createUser(input);
     const { id, email, name } = user;
-    return { id, email, name: name as string };
+    return { id, email, name: name || '' };
   },
 
-  async updateUser(id: number, input: UpdateUserPayload): Promise<UserResponsePayload> {
+  async updateUser(id, input) {
     const user = await updateUser({ id, ...input });
     const { id: userId, email, name } = user;
-    return { id: userId, email, name: name as string };
+    return { id: userId, email, name: name || '' };
   },
 
-  async saveRefreshToken(id: number, refreshToken): Promise<UserResponsePayload> {
+  async saveRefreshToken(id, refreshToken) {
     const user = await saveRefreshToken(id, refreshToken);
     const { id: userId, email, name } = user;
-    return { id: userId, email, name: name as string }
+    return { id: userId, email, name: name || '' }
   },
 
-  async deleteUser(id: number): Promise<UserResponsePayload | null> {
+  async deleteUser(id) {
     const user = await deleteUser(id);
-    if (!user || user.name === null) {
-      return null;
-    }
+    if (!user || !user.name) return null;
     const { id: userId, email, name } = user;
     return { id: userId, email, name };
   },

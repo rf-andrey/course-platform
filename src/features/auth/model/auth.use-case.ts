@@ -26,9 +26,7 @@ export function createSignInUseCase(userRepo: UserRepository) {
 
     const isPasswordCorrect = await comparePassword(password, user.password);
 
-    if (!isPasswordCorrect) {
-      throw new Error('Invalid email or password'); // Login Error
-    }
+    if (!isPasswordCorrect) throw new Error('Invalid email or password'); // Login Error
 
     const refreshToken = generateRefreshToken();
     await userRepo.saveRefreshToken(user.id, refreshToken);

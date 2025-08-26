@@ -19,14 +19,15 @@ const userResponseSchema = z.object({
   name: z.string(),
 });
 
-const user = z.object({
+const userSchema = z.object({
   id: z.number(),
   name: z.string(),
   email: z.string().email(),
   password: z.string(),
+  refreshToken: z.string().optional(),
 });
 
-export type UserPayload = z.infer<typeof user>;
+export type UserPayload = z.infer<typeof userSchema>;
 export type CreateUserPayload = z.infer<typeof createUserSchema>;
 export type UpdateUserPayload = z.infer<typeof updateUserSchema>;
 export type UserResponsePayload = z.infer<typeof userResponseSchema>;

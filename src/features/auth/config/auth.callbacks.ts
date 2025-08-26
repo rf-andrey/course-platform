@@ -1,23 +1,30 @@
 import type { Session, User } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 
-export const sessionCallback = (params: {
+import { generateAccessToken, refreshTokenIfNeeded } from '../lib/utils';
+
+export const jwtCallback = async ({ token, user }: { token: JWT; user?: User }) => {
+  if (user) {
+    token.user = user;
+    token.accessToken = await generateAccessToken(Number(user.id));
+    token.refreshToken = user.refreshToken;
+    token.accessTokenExpires = Date.now() + 2 * 60 * 1000;
+
+    return token;
+  }
+
+  const refreshedToken = refreshTokenIfNeeded(token);
+
+  return refreshedToken;
+};
+
+export const sessionCallback = ({ session, token }: {
   session: Session;
   token: JWT;
-  user: User;
 }) => {
-  const { session, token } = params;
   session.user = token.user as any;
+  session.accessToken = token.accessToken;
   session.refreshToken = token.refreshToken;
   
   return session;
-};
-
-export const jwtCallback = (params: { token: JWT; user?: User }) => {
-  const { token, user } = params;
-  if (user) {
-    token.user = user;
-    token.refreshToken = user.refreshToken;
-  }
-  return token;
 };

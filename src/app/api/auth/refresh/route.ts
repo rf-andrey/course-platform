@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { findUserByRefreshTokenUseCase, saveRefreshTokenUseCase } from '@/entities/user/model';
-import { generateRefreshToken } from '@/features/auth/lib/utils';
+import { generateAccessToken, generateRefreshToken } from '@/features/auth/lib/utils';
 
-export async function POST(req: Request) {
+export async function POST() {
   const cookieStore = cookies();
   const refreshToken = cookieStore.get('refreshToken')?.value;
 
@@ -16,7 +16,13 @@ export async function POST(req: Request) {
   const newRefreshToken = generateRefreshToken();
   await saveRefreshTokenUseCase(user.id, newRefreshToken);
 
-  const res = NextResponse.json({ message: 'Token refreshed' });
+  const newAccessToken = await generateAccessToken(user.id);
+
+  const res = NextResponse.json({
+    accessToken: newAccessToken,
+    message: 'Token refreshed'
+  });
+
   res.cookies.set('refreshToken', newRefreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',

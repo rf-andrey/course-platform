@@ -8,7 +8,7 @@ export const jwtCallback = async ({ token, user }: { token: JWT; user?: User }) 
     token.user = user;
     token.accessToken = await generateAccessToken(Number(user.id));
     token.refreshToken = user.refreshToken;
-    token.accessTokenExpires = Date.now() + 2 * 60 * 1000;
+    token.accessTokenExpires = Date.now() + 15 * 60 * 1000;
 
     return token;
   }

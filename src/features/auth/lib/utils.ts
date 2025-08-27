@@ -4,7 +4,7 @@ import { encode, decode } from 'next-auth/jwt';
 import { findUserByIdUseCase } from '@/entities/user/model';
 
 const JWT_SECRET = process.env.NEXTAUTH_SECRET!;
-const ACCESS_TOKEN_EXPIRATION = 2 * 60;
+const ACCESS_TOKEN_EXPIRATION = 15 * 60;
 
 export async function hashPassword(password: string) {
   return hashSync(password, 12);
@@ -50,7 +50,7 @@ export async function refreshTokenIfNeeded(token: any) {
   return {
     ...token,
     accessToken: newAccessToken,
-    accessTokenExpires: Date.now() + 2 * 60 * 1000,
+    accessTokenExpires: Date.now() + 15 * 60 * 1000,
     refreshToken: dbUser.refreshToken,
   };
 }

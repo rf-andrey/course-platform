@@ -1,19 +1,15 @@
-import { UserInput } from './user.schema';
+import { CreateUserPayload, UpdateUserPayload } from './user.schema';
 import { UserRepository } from './user.repository';
 
 export function createCreateUserUseCase(userRepo: UserRepository) {
-  return async function createUserUseCase(
-    email: string,
-    password: string,
-    name: string
-  ) {
-    const existingUser = await userRepo.findUserByEmail(email);
+  return async function createUserUseCase(input: CreateUserPayload) {
+    const existingUser = await userRepo.findUserByEmail(input.email);
 
     if (existingUser) {
       throw new Error(); // existing email
     }
 
-    const user = await userRepo.createUser({ email, password, name });
+    const user = await userRepo.createUser(input);
 
     return user;
   };
@@ -31,6 +27,12 @@ export function createFindUserByEmailUseCase(userRepo: UserRepository) {
   };
 }
 
+export function createFindUserByRefreshTokenUseCase(userRepo: UserRepository) {
+  return async function findUserByRefreshTokenUseCase(refreshToken: string) {
+    return userRepo.findUserByRefreshToken(refreshToken);
+  };
+}
+
 export function createFindAllUsersUseCase(userRepo: UserRepository) {
   return async function findAllUsersUseCase() {
     return userRepo.findAllUsers();
@@ -38,7 +40,7 @@ export function createFindAllUsersUseCase(userRepo: UserRepository) {
 }
 
 export function createUpdateUserUseCase(userRepo: UserRepository) {
-  return async function updateUserUseCase(id: number, input: UserInput) {
+  return async function updateUserUseCase(id: number, input: UpdateUserPayload) {
     const existingUser = await userRepo.findUserById(id);
 
     if (!existingUser) {
@@ -48,6 +50,12 @@ export function createUpdateUserUseCase(userRepo: UserRepository) {
     const user = await userRepo.updateUser(id, input);
 
     return user;
+  };
+}
+
+export function createSaveRefreshTokenUseCase(userRepo: UserRepository) {
+  return async function saveRefreshTokenUseCase(id: number, refreshToken: string) {
+    return userRepo.saveRefreshToken(id, refreshToken);
   };
 }
 

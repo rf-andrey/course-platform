@@ -1,65 +1,88 @@
-import { UserInput, UserResponse, User } from './user.schema';
+import { CreateUserPayload, UpdateUserPayload, UserResponsePayload, UserPayload } from './user.schema';
 import {
   createUser,
   deleteUser,
   findUser,
   findUserByEmail,
+  findUserByRefreshToken,
   findUsers,
   updateUser,
+  saveRefreshToken
 } from './user.service';
 
 export interface UserRepository {
-  findUserByEmail(email: string): Promise<User | null>;
-  findUserById(id: number): Promise<User | null>;
-  findAllUsers(): Promise<UserResponse[]>;
-  createUser(input: UserInput): Promise<UserResponse>;
-  updateUser(id: number, input: UserInput): Promise<UserResponse>;
-  deleteUser(id: number): Promise<UserResponse | null>;
+  findUserByEmail(email: string): Promise<UserPayload | null>;
+  findUserById(id: number): Promise<UserPayload | null>;
+  findUserByRefreshToken(refreshToken: string): Promise<UserPayload | null>;
+  findAllUsers(): Promise<UserResponsePayload[]>;
+  createUser(input: CreateUserPayload): Promise<UserResponsePayload>;
+  updateUser(id: number, input: UpdateUserPayload): Promise<UserResponsePayload>;
+  saveRefreshToken(id: number, refreshToken: string): Promise<UserResponsePayload | null>
+  deleteUser(id: number): Promise<UserResponsePayload | null>;
 }
 
 export const userRepository: UserRepository = {
-  async findUserByEmail(email: string): Promise<User | null> {
+  async findUserByEmail(email) {
     const user = await findUserByEmail(email);
-    if (!user || user.name === null) {
-      return null;
+    if (!user || !user.name) return null;
+
+    return {
+      ...user,
+      name: user.name,
+      refreshToken: user.refreshToken || undefined,
     }
-    const { id, email: userEmail, name, password } = user;
-    return { id, email: userEmail, name, password };
   },
 
-  async findUserById(id: number): Promise<User | null> {
+  async findUserById(id) {
     const user = await findUser(id);
-    if (!user || user.name === null) {
-      return null;
-    }
-    const { id: userId, email, name, password } = user;
-    return { id: userId, email, name: name as string, password };
+    if (!user || !user.name) return null;
+
+    return {
+      ...user,
+      name: user.name,
+      refreshToken: user.refreshToken || undefined,
+    };
   },
 
-  async findAllUsers(): Promise<UserResponse[]> {
+  async findUserByRefreshToken(refreshToken) {
+    const user = await findUserByRefreshToken(refreshToken);
+    if (!user || !user.name) return null;
+
+    return {
+      ...user,
+      name: user.name,
+      refreshToken: user.refreshToken || undefined,
+    };
+  },
+
+  async findAllUsers() {
     const users = await findUsers();
     return users
-      .filter((user) => user.name !== null)
-      .map(({ id, email, name }) => ({ id, email, name: name as string }));
+      .filter((user) => user.name)
+      .map(({ id, email, name }) => ({ id, email, name: name || '' }));
   },
 
-  async createUser(input: UserInput): Promise<UserResponse> {
+  async createUser(input) {
     const user = await createUser(input);
     const { id, email, name } = user;
-    return { id, email, name: name as string };
+    return { id, email, name: name || '' };
   },
 
-  async updateUser(id: number, input: UserInput): Promise<UserResponse> {
+  async updateUser(id, input) {
     const user = await updateUser({ id, ...input });
     const { id: userId, email, name } = user;
-    return { id: userId, email, name: name as string };
+    return { id: userId, email, name: name || '' };
   },
 
-  async deleteUser(id: number): Promise<UserResponse | null> {
+  async saveRefreshToken(id, refreshToken) {
+    const user = await saveRefreshToken(id, refreshToken);
+    const { id: userId, email, name } = user;
+    return { id: userId, email, name: name || '' }
+  },
+
+  async deleteUser(id) {
     const user = await deleteUser(id);
-    if (!user || user.name === null) {
-      return null;
-    }
+    if (!user || !user.name) return null;
     const { id: userId, email, name } = user;
     return { id: userId, email, name };
   },

@@ -1,9 +1,15 @@
 import { database } from '@/shared/lib/db';
-import { UserInput } from './user.schema';
+import { CreateUserPayload, UpdateUserPayload } from './user.schema';
+import { hashPassword } from '@/features/auth/lib/utils';
 
-export async function createUser(input: UserInput) {
+export async function createUser(input: CreateUserPayload) {
+  const hashedPassword = await hashPassword(input.password);
   const user = await database.user.create({
-    data: input,
+    data: {
+      email: input.email,
+      name: input.name,
+      password: hashedPassword,
+    }
   });
 
   return user;
@@ -13,6 +19,10 @@ export async function findUserByEmail(email: string) {
   return database.user.findUnique({
     where: { email },
   });
+}
+
+export async function findUserByRefreshToken(refreshToken: string) {
+  return database.user.findFirst({ where: { refreshToken } });
 }
 
 export async function findUsers() {
@@ -36,7 +46,7 @@ export async function updateUser({
   email,
   password,
   id,
-}: UserInput & { id: number }) {
+}: UpdateUserPayload & { id: number }) {
   const user = await database.user.update({
     where: { id },
     data: {
@@ -47,6 +57,13 @@ export async function updateUser({
   });
 
   return user;
+}
+
+export async function saveRefreshToken(id: number, refreshToken: string) {
+  return database.user.update({
+    where: { id },
+    data: { refreshToken },
+  })
 }
 
 export async function deleteUser(id: number) {

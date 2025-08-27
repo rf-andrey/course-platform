@@ -1,21 +1,26 @@
+import { LoginFormData } from '@/features/auth/model/auth.schema';
 import { signIn } from 'next-auth/react';
 
 export const loginAction = async (
-  _prevState: string | undefined,
-  formData: FormData
+  formData: LoginFormData,
+  setLoading: React.Dispatch<boolean>,
+  setError: React.Dispatch<string>
 ) => {
   const credentials = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+    email: formData.email,
+    password: formData.password,
   };
 
   try {
+    setLoading(true);
     await signIn('credentials', { ...credentials, callbackUrl: '/dashboard' });
   } catch (error) {
     if (error instanceof Error) {
-      return error.message;
+      setError(error.message);
     } else {
-      return String(error);
+      setError(String(error));
     }
+  } finally {
+    setLoading(false);
   }
 };

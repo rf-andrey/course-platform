@@ -1,12 +1,13 @@
 'use client';
 
-import { RegisterForm, Inputs } from './registerForm';
+import { RegisterForm } from './registerForm';
 import { useCreateUser } from '@/features/user/model/useCreateUser';
+import { RegisterFormData } from '@/features/user/model/user.schema';
 
 export default function LoginPage() {
   const { handleCreate, loading, error } = useCreateUser();
 
-  const onSubmit = async (data: Inputs) => {
+  const onSubmit = async (data: RegisterFormData) => {
     handleCreate(data);
   };
 

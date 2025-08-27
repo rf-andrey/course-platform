@@ -1,17 +1,12 @@
 'use client';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
-
-export type Inputs = {
-  name: string;
-  email: string;
-  password: string;
-}
+import { RegisterFormData } from '@/features/user/model/user.schema';
 
 interface RegisterFormProps {
   loading: boolean
   error: string | null
-  onSubmit: (data: Inputs) => void
+  onSubmit: (data: RegisterFormData) => void
 }
 
 export const RegisterForm = ({ loading, error, onSubmit }: RegisterFormProps) => {
@@ -19,14 +14,14 @@ export const RegisterForm = ({ loading, error, onSubmit }: RegisterFormProps) =>
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<Inputs>();
+  } = useForm<RegisterFormData>();
 
-  const onFormSubmit: SubmitHandler<Inputs> = (data) => onSubmit(data);
+  const onFormSubmit: SubmitHandler<RegisterFormData> = (data) => onSubmit(data);
 
   return (
     <div className="flex flex-col gap-2 w-3/4 m-auto">
       {loading && (
-        <p className="bg-red-100 text-red-600 text-center p-2">{loading}</p>
+        <p className="bg-red-100 text-red-600 text-center p-2">Carregando...</p>
       )}
       {error && (
         <p className="bg-red-100 text-red-600 text-center p-2">{error}</p>

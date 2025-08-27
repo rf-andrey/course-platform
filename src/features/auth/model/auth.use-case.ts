@@ -23,7 +23,7 @@ export function createSignInUseCase(userRepo: UserRepository) {
       await comparePassword(password, '$2b$10$invalidsaltinvalidsaltinv');
       throw new Error('Invalid email or password'); // Login Error
     }
-
+    
     const isPasswordCorrect = await comparePassword(password, user.password);
 
     if (!isPasswordCorrect) throw new Error('Invalid email or password'); // Login Error

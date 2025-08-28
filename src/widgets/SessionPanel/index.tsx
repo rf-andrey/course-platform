@@ -1,5 +1,6 @@
 import { getSession } from '@/features/auth/model/session';
 import { LoginButton, LogoutButton } from './ui/auth';
+import { RegisterButton } from './ui/RegisterButton';
 
 export default async function SessionPanel() {
   const session = await getSession();
@@ -15,6 +16,8 @@ export default async function SessionPanel() {
         <>
           <LoginButton />
           <h2>Please sign in</h2>
+          <br />
+          <RegisterButton />
         </>
       )}
       <h3>Session Data</h3>

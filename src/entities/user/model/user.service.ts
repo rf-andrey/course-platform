@@ -1,9 +1,10 @@
-import { database } from '@/shared/lib/db';
+import database from '@/shared/lib/prisma';
 import { CreateUserPayload, UpdateUserPayload } from './user.schema';
 import { hashPassword } from '@/features/auth/lib/utils';
 
 export async function createUser(input: CreateUserPayload) {
   const hashedPassword = await hashPassword(input.password);
+
   const user = await database.user.create({
     data: {
       email: input.email,

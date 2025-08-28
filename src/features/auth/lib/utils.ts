@@ -6,7 +6,7 @@ import { findUserByIdUseCase } from '@/entities/user/model';
 const JWT_SECRET = process.env.NEXTAUTH_SECRET!;
 const ACCESS_TOKEN_EXPIRATION = 15 * 60;
 
-export async function hashPassword(password: string) {
+export function hashPassword(password: string) {
   return hashSync(password, 12);
 }
 

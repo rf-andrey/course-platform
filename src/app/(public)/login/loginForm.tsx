@@ -1,29 +1,40 @@
 'use client';
 
-import React from 'react';
-import { useFormState } from 'react-dom';
+import { LoginFormData } from '@/features/auth/model/auth.schema';
+import { useForm, SubmitHandler } from 'react-hook-form';
 
-import { loginAction } from './actions';
 
-export const Login = () => {
-  const [state, formAction] = useFormState(loginAction, undefined);
+export type Inputs = {
+  email: string;
+  password: string;
+}
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+interface LoginFormProps {
+  loading: boolean
+  error: string | null
+  onSubmit: (data: LoginFormData) => void
+}
 
-    const formData = new FormData(event.currentTarget);
-
-    formAction(formData);
-  };
+export const Login = ({ loading, error, onSubmit }: LoginFormProps) => {
+  const {
+      register,
+      handleSubmit,
+      formState: { errors }
+    } = useForm<Inputs>();
+  
+  const onFormSubmit: SubmitHandler<Inputs> = (data) => onSubmit(data);
 
   return (
     <div className="flex flex-col gap-2 w-3/4 m-auto">
-      {state && (
-        <p className="bg-red-100 text-red-600 text-center p-2">{state}</p>
+      {loading && (
+        <p className="bg-red-100 text-red-600 text-center p-2">{loading}</p>
       )}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input type="email" name="email" required className="border-2" />
-        <input type="password" name="password" required className="border-2" />
+      {error && (
+        <p className="bg-red-100 text-red-600 text-center p-2">{error}</p>
+      )}
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <input type="email" {...register('email', { required: true })} className="border-2" />
+        <input type="password" {...register('password', { required: true })} className="border-2" />
         <button type="submit" className="bg-slate-300">
           Login
         </button>

@@ -1,11 +1,51 @@
 @import "tailwindcss";
 
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  name: course-platform-light;
+  default: true;
+  prefersdark: false;
+
+  --color-primary: #2563EB;
+  --color-primary-focus: #1E40AF;
+  --color-primary-content: #FFF;
+  --color-secondary: #F59E0B;
+  --color-secondary-focus: #B45309;
+  --color-secondary-content: #111827;
+  --color-base-100: #F9FAFB;
+  --color-base-200: #FFF;
+  --color-base-300: #E5E7EB;
+  --color-neutral: #6B7280;
+  --color-neutral-content: #111827;
+  --color-info: #3B82F6;
+  --color-warning: #FBBF24;
+  --color-error: #EF4444;
+  --color-success: #10B981;
+};
+
+@plugin "daisyui/theme" {
+  name: 'course-platform-dark';
+  default: false;
+  prefersdark: true;
+
+  --color-primary: #60A5FA;
+  --color-primary-focus: #3B82F6;
+  --color-primary-content: #111827;
+  --color-secondary: #FBBF24;
+  --color-secondary-focus: #F59E0B;
+  --color-secondary-content: #1F2937;
+  --color-base-100: #111827;
+  --color-base-200: #1F2937;
+  --color-base-300: #374151;
+  --color-neutral: #D1D5DB;
+  --color-neutral-content: #F9FAFB;
+  --color-info: #60A5FA;
+  --color-warning: #FBBF24;
+  --color-error: #F87171;
+  --color-success: #34D399;
+};
+
 * {
   box-sizing: border-box;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
 }

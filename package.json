@@ -52,6 +52,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.21",
+    "daisyui": "^5.0.54",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "husky": "^9.1.7",

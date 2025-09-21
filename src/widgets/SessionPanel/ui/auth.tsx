@@ -1,12 +1,13 @@
 'use client';
 
+import { Button } from '@/shared/ui/input/Button';
+import { ButtonLink } from '@/shared/ui/input/Link';
 import { signOut } from 'next-auth/react';
-import Link from 'next/link';
 
 export const LoginButton = () => {
-  return <Link href="/login">Sign in</Link>;
+  return <ButtonLink href="/login">Sign in</ButtonLink>;
 };
 
 export const LogoutButton = () => {
-  return <button onClick={() => signOut()}>Sign out</button>;
+  return <Button onClick={() => signOut()} variant="secondary">Sign out</Button>;
 };

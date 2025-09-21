@@ -2,6 +2,7 @@
 
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { RegisterFormData } from '@/features/user/model/user.schema';
+import { Button } from '@/shared/ui/input/Button';
 
 interface RegisterFormProps {
   loading: boolean
@@ -30,9 +31,9 @@ export const RegisterForm = ({ loading, error, onSubmit }: RegisterFormProps) =>
         <input type="text" {...register('name', { required: true })} className="border-2" />
         <input type="email" {...register('email', { required: true })} className="border-2" />
         <input type="password" {...register('password', { required: true })} className="border-2" />
-        <button type="submit" className="bg-slate-300">
+        <Button type="submit" className="bg-slate-300">
           Register
-        </button>
+        </Button>
       </form>
     </div>
   );

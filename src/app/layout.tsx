@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Providers } from './providers';
+import { PageWrapper } from '@/shared/ui/layout/PageWrapper';
 
 export const metadata: Metadata = {
   title: 'Next Boilerplate',
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="course-platform-light">
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <PageWrapper>{children}</PageWrapper>
+        </Providers>
       </body>
     </html>
   );

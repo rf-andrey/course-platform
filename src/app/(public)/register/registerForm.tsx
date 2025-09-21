@@ -3,6 +3,15 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { RegisterFormData } from '@/features/user/model/user.schema';
 import { Button } from '@/shared/ui/input/Button';
+import { Stack } from '@/shared/ui/layout/Stack';
+import { Spinner } from '@/shared/ui/feedback/LoadingSpinner';
+import { Input } from '@/shared/ui/input/Input';
+
+type Inputs = {
+  name: string;
+  email: string;
+  password: string;
+}
 
 interface RegisterFormProps {
   loading: boolean
@@ -15,26 +24,38 @@ export const RegisterForm = ({ loading, error, onSubmit }: RegisterFormProps) =>
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<RegisterFormData>();
+  } = useForm<Inputs>();
 
   const onFormSubmit: SubmitHandler<RegisterFormData> = (data) => onSubmit(data);
 
   return (
-    <div className="flex flex-col gap-2 w-3/4 m-auto">
+    <Stack gap={4} className="w-3/4 m-auto items-center">
       {loading && (
-        <p className="bg-red-100 text-red-600 text-center p-2">Carregando...</p>
+        <Spinner />
       )}
-      {error && (
-        <p className="bg-red-100 text-red-600 text-center p-2">{error}</p>
+      {!loading && (
+        <form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col gap-4 w-full">
+          {/* TODO: adicionar labels */}
+          <Input type="text" {...register('name', { required: true })} />
+          <Input type="email" {...register('email', { required: true })} />
+          <Input type="password" {...register('password', { required: true })} />
+          <Button type="submit">
+            Register
+          </Button>
+        </form>
       )}
-      <form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col gap-4">
-        <input type="text" {...register('name', { required: true })} className="border-2" />
-        <input type="email" {...register('email', { required: true })} className="border-2" />
-        <input type="password" {...register('password', { required: true })} className="border-2" />
-        <Button type="submit" className="bg-slate-300">
-          Register
-        </Button>
-      </form>
-    </div>
+      {(error || errors.email || errors.password) && (
+        <p className="bg-red-100 text-red-600 text-center p-2">
+          error:
+          {error}
+          email:
+          {errors.email?.type ?? 'none'}
+          password:
+          {errors.password?.type ?? 'none'}
+          root:
+          {errors.root?.type ?? 'none'}
+        </p>
+      )}
+    </Stack>
   );
 };

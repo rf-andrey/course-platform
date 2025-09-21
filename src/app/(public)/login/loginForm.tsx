@@ -7,8 +7,7 @@ import { Input } from '@/shared/ui/input/Input';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Spinner } from '@/shared/ui/feedback/LoadingSpinner';
 
-
-export type Inputs = {
+type Inputs = {
   email: string;
   password: string;
 }
@@ -34,6 +33,7 @@ export const Login = ({ loading, error, onSubmit }: LoginFormProps) => {
       )}
       {!loading && (
         <form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col gap-4 w-full">
+          {/* TODO: adicionar labels */}
           <Input type="email" {...register('email', { required: true })} />
           <Input type="password" {...register('password', { required: true })} />
           <Button type="submit">
@@ -46,11 +46,11 @@ export const Login = ({ loading, error, onSubmit }: LoginFormProps) => {
           error:
           {error}
           email:
-          {errors.email?.type || 'none'}
+          {errors.email?.type ?? 'none'}
           password:
-          {errors.password?.type || 'none'}
+          {errors.password?.type ?? 'none'}
           root:
-          {errors.root?.type || 'none'}
+          {errors.root?.type ?? 'none'}
         </p>
       )}
     </Stack>

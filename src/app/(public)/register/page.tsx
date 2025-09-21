@@ -3,6 +3,8 @@
 import { RegisterForm } from './registerForm';
 import { useCreateUser } from '@/features/user/model/useCreateUser';
 import { RegisterFormData } from '@/features/user/model/user.schema';
+import { FormContainer } from '@/shared/ui/layout/FormContainer';
+import { H2 } from '@/shared/ui/typography';
 
 export default function LoginPage() {
   const { handleCreate, loading, error } = useCreateUser();
@@ -13,14 +15,14 @@ export default function LoginPage() {
 
   return (
     <div>
-      <h2 className="p-2 text-center text-slate-600">Login Page</h2>
-      <div className="flex flex-col gap-2">
+      <H2 className="text-center">Register Page</H2>
+      <FormContainer>
         <RegisterForm
-          onSubmit={onSubmit}
           loading={loading}
           error={error}
+          onSubmit={onSubmit}
         />
-      </div>
+      </FormContainer>
     </div>
   );
 }

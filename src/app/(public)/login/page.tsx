@@ -14,7 +14,6 @@ export default function LoginPage() {
   const [error, setError] = useState<string>('');
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log('teste')
     loginAction(data, setLoading, setError);
   };
 
@@ -22,11 +21,11 @@ export default function LoginPage() {
     <Section>
     <FormContainer>
       <H2 className='text-center'>Login Page</H2>
-        <Login
-          loading={loading}
-          error={error}
-          onSubmit={onSubmit}
-        />
+      <Login
+        loading={loading}
+        error={error}
+        onSubmit={onSubmit}
+      />
     </FormContainer>
     </Section>
   );

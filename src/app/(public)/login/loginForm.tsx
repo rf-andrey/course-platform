@@ -28,7 +28,7 @@ export const Login = ({ loading, error, onSubmit }: LoginFormProps) => {
   
   const onFormSubmit: SubmitHandler<Inputs> = (data) => onSubmit(data);
   return (
-    <Stack gap={4} className="w-3/4 m-auto">
+    <Stack gap={4} className="w-3/4 m-auto items-center">
       {loading && (
         <Spinner />
       )}

@@ -33,9 +33,8 @@ export const Login = ({ loading, error, onSubmit }: LoginFormProps) => {
       )}
       {!loading && (
         <form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col gap-4 w-full">
-          {/* TODO: adicionar labels */}
-          <Input type="email" {...register('email', { required: true })} />
-          <Input type="password" {...register('password', { required: true })} />
+          <Input label="Email" type="email" {...register('email', { required: true })} />
+          <Input label="Password" type="password" {...register('password', { required: true })} />
           <Button type="submit">
             Login
           </Button>
